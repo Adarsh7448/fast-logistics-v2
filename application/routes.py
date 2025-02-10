@@ -1,5 +1,11 @@
-from flask import current_app as app, jsonify
+from .database import db 
+from .models import User, Role
+from flask import current_app as app
 from flask_security import auth_required, roles_required, current_user
+
+@app.route('/', methods = ['GET'])
+def home():
+    return "<h1>This is my home page</h1>"
 
 @app.route('/admin')
 @auth_required('token') # Authentication

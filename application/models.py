@@ -24,6 +24,8 @@ class UsersRoles(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
 
 
+<<<<<<< HEAD
+=======
 # 1, xyza@abc.com, xyz, 1234, gdhsj, 1
 
 # 1, admin, superuser
@@ -35,3 +37,4 @@ class UsersRoles(db.Model):
 # user_1.roles ---> [role_1, role_2, role_3]
 
 # roles = UsersRoles.query.filter_by(user_id = 1).all()
+>>>>>>> 85571b627a6bff209a4ea1e1fb82c21946be40d4
