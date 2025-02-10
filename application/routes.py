@@ -1,6 +1,6 @@
 from .database import db 
 from .models import User, Role
-from flask import current_app as app
+from flask import current_app as app, jsonify
 from flask_security import auth_required, roles_required, current_user
 
 @app.route('/', methods = ['GET'])
