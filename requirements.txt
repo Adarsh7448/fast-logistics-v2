@@ -1,3 +1,5 @@
+aniso8601==10.0.0
+bcrypt==4.2.1
 blinker==1.9.0
 click==8.1.8
 colorama==0.4.6
@@ -6,6 +8,7 @@ email_validator==2.2.0
 Flask==3.1.0
 Flask-Login==0.6.3
 Flask-Principal==0.4.0
+Flask-RESTful==0.3.10
 Flask-Security-Too==5.5.2
 Flask-SQLAlchemy==3.1.1
 Flask-WTF==1.2.2
@@ -16,6 +19,8 @@ itsdangerous==2.2.0
 Jinja2==3.1.5
 MarkupSafe==3.0.2
 passlib==1.7.4
+pytz==2025.1
+six==1.17.0
 SQLAlchemy==2.0.37
 typing_extensions==4.12.2
 Werkzeug==3.1.3
