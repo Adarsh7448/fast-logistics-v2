@@ -19,6 +19,7 @@ parser.add_argument('source')
 parser.add_argument('destination')
 parser.add_argument('description')
 
+
 class TransApi(Resource):
     @auth_required('token')
     @roles_accepted('user', 'admin')
@@ -73,6 +74,47 @@ class TransApi(Resource):
             return {
                 "message": "One or more required fields are missing"
             }, 400
+
+    @auth_required('token')
+    @roles_required('user')   
+    def put(self, trans_id):
+        args = parser.parse_args()
+        trans = Transaction.query.get(trans_id)
+        if args['name'] == None:
+            return {
+                "message": "Name is required"
+            }, 400
+        trans.name = args['name']
+        trans.type = args['type']
+        trans.date = args['date']
+        trans.source = args['source']
+        trans.destination = args['destination']
+        trans.description = args['description']
+        db.session.commit()
+        return {
+            "message": "transaction updated successfully!"
+        }
     
-api.add_resource(TransApi, '/api/get', '/api/create')
+    @auth_required('token')
+    @roles_required('user')   
+    def delete(self, trans_id):
+        trans = Transaction.query.get(trans_id)
+        if trans:
+            db.session.delete(trans)
+            db.session.commit()
+            return {
+                "message": "transaction deleted successfully!"
+            }
+        else:
+            return {
+                "message": "transaction not found!"
+            }, 404
+
+
+
+    
+api.add_resource(TransApi, '/api/get', 
+                           '/api/create', 
+                           '/api/update/<int:trans_id>', 
+                           '/api/delete/<int:trans_id>')
 

@@ -3,6 +3,8 @@
 - /api/home - user dashboard
 - /api/admin - admin dashboard
 - /api/register - user registration
+- /login?include_auth_token POST
+- /api/login
 
 ## Transaction based api
 
@@ -13,9 +15,10 @@
 
 ## Transaction based routes 
 ### for admin
-- /api/internal/<trans_id>
+- /api/pay/<trans_id> # changing internal status from "pending" to "paid" 
 - /api/delivery/<trans_id>
-- /api/review/<trans_id>
+- /api/review/<trans_id> # changing internal status from "requested" to "pending"
+- /api/cancel/<trans_id>  # changing internal status from "pending" to "cancelled" 
 
 possible internal statuses
 - requested
