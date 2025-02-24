@@ -1,13 +1,13 @@
 from .database import db 
 from .models import User, Role, Transaction
-from flask import current_app as app, jsonify, request
+from flask import current_app as app, jsonify, request, render_template
 from flask_security import auth_required, roles_required, current_user, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
 @app.route('/', methods = ['GET'])
 def home():
-    return "<h1>This is my home page</h1>"
+    return render_template('index.html')
 
 @app.route('/api/admin')
 @auth_required('token') # Authentication
@@ -19,7 +19,7 @@ def admin_home():
 
 @app.route('/api/home')
 @auth_required('token')
-@roles_required(['user', 'admin']) #and
+@roles_required('user')#and
 # @roles_accepted(['user', 'admin']) #OR
 def user_home():
     user = current_user

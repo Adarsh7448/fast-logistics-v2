@@ -1,0 +1,23 @@
+<div class="row border">
+    <div class="col" style="height: 750px;">
+        <div class="border mx-auto mt-5" style="height: 400px; width: 300px;">
+            Login Page
+        </div>
+    </div>
+</div>
+
+
+<div>
+    <h2 class="text-center">Login Form</h2>
+    <div>
+        <label for="email">Enter your email:</label>
+        <input type="text" id="email" v-model="email">
+    </div>
+    <div>
+        <label for="pass">Enter your password:</label>
+        <input type="password" id="pass" v-model="password">
+    </div>
+    <div>
+        <button class="btn btn-primary" @click="loginUser">Login</button>
+    </div>
+</div>
