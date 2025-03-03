@@ -21,3 +21,51 @@
         <button class="btn btn-primary" @click="loginUser">Login</button>
     </div>
 </div>
+
+
+<div v-for="for t in transaction" class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{t.name}} <span class="badge text-white bg-secondary">{{t.type}}</span></h5>
+        <p class="card-text">Created at: {{t.date}}</p>
+        <p class="card-text">Delivery: {{t.delivery}}</p>
+        <p class="card-text">About: {{t.description}}</p>
+        <p class="card-text">From {{t.source}} to {{t.destination}}</p>
+        <p class="card-text">Amount: {{t.amount}}</p>
+    </div>
+</div>
+
+
+
+<div class="mb-3">
+    <label for="name" class="form-label">Transaction Name</label>
+    <input type="text" class="form-control" id="name" v-model="transData.name">
+</div>
+<div class="mb-3">
+    <label for="type" class="form-label">Transaction Type</label>
+    <input type="text" class="form-control" id="type" v-model="transData.type">
+</div>
+<div class="mb-3">
+    <label for="source" class="form-label">Source City</label>
+    <select class="form-select" aria-label="Default select example" v-model="transData.source">
+        <option selected>Open this select menu</option>
+        <option value="Mumbai">Mumbai</option>
+        <option value="Nagpur">Nagpur</option>
+        <option value="Chennai">Chennai</option>
+        <option value="Delhi">Delhi</option>
+        <option value="Kolkata">Kolkata</option>
+    </select>
+</div>
+<div class="mb-3">
+    <label for="destination" class="form-label">Destination City</label>
+    <select class="form-select" aria-label="Default select example" v-model="transData.source">
+        <option selected>Open this select menu</option>
+        <option value="Mumbai">Mumbai</option>
+        <option value="Nagpur">Nagpur</option>
+        <option value="Chennai">Chennai</option>
+        <option value="Delhi">Delhi</option>
+        <option value="Kolkata">Kolkata</option>
+    </select>
+</div>
+<div class="mb-3 text-end">
+    <button class="btn btn-primary">Create+</button>
+</div>

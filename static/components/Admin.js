@@ -4,23 +4,25 @@ export default {
         <h2 class="my-2">Welcome, {{userData.username}}!</h2>
         <div class="row border">
             <div class="col-8 border" style="height: 750px; overflow-y: scroll">
-                <h2>Requested Transactions</h2>
+                <h2>Your Transactions</h2>
                 <div v-for="t in transactions" class="card mt-2">
-                    table
-                     thead
-                     tbody
-                </div>
-                <h2>Pending Transactions</h2>
-                <div v-for="t in transactions" class="card mt-2">
-                    table
-                     thead
-                     tbody
-                </div>
-                <h2>Paid Transactions</h2>
-                <div v-for="t in transactions" class="card mt-2">
-                    table
-                     thead
-                     tbody
+                    <div class="card-body">
+                        <h5 class="card-title">{{t.name}} <span class="badge text-white bg-secondary">{{t.type}}</span></h5>
+                        <p class="card-text">Created at: {{t.date}}</p>
+                        <p v-if="t.internal_status == 'paid'" class="card-text">Delivery: {{t.delivery}}</p>
+                        <p v-if="t.internal_status == 'paid'" class="card-text">Delivery: {{t.delivery_status}}</p>
+                        <p class="card-text">About: {{t.description}}</p>
+                        <p class="card-text">From {{t.source}} to {{t.destination}}</p>
+                        <p v-if="t.internal_status == 'pending'" class="card-text">
+                            Amount: {{t.amount}}
+                            <button class="btn btn-success">Pay</button>
+                        </p>
+                        <p v-if="t.internal_status == 'requested'" class="card-text">
+                            <router-link :to="{name: 'update', params: {id: t.id}}" class="btn btn-warning">Update</router-link>
+                            <button class="btn btn-danger">Delete</button>
+                        </p>
+                        
+                    </div>
                 </div>
             </div>
             <div class="col-4 border" style="height: 750px;">
@@ -62,7 +64,7 @@ export default {
                     <textarea class="form-control" id="desc" rows="3" v-model="transData.desc"></textarea>
                 </div>
                 <div class="mb-3 text-end">
-                    <button @click="createTrans" class="btn btn-primary">Create+</button>
+                    <button @click="review" class="btn btn-primary">Create+</button>
                 </div>
             </div>
         </div>
@@ -87,20 +89,6 @@ export default {
         this.loadTrans()    
     },
     methods:{
-        createTrans(){
-            fetch('/api/create', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authentication-Token": localStorage.getItem('auth_token')
-                },
-                body: JSON.stringify(this.transData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                this.loadTrans()
-            })
-        },
         loadUser(){
             fetch('/api/home', {
                 method: 'GET',
@@ -125,6 +113,9 @@ export default {
                 console.log(data)
                 this.transactions = data
             })
+        },
+        review(){
+            
         }
     }
 

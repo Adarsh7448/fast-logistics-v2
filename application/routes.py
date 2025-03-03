@@ -1,9 +1,9 @@
 from .database import db 
 from .models import User, Role, Transaction
 from flask import current_app as app, jsonify, request, render_template
-from flask_security import auth_required, roles_required, current_user, login_user
+from flask_security import auth_required, roles_required, roles_accepted, current_user, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
-
+from .utils import roles_list
 
 @app.route('/', methods = ['GET'])
 def home():
@@ -19,14 +19,14 @@ def admin_home():
 
 @app.route('/api/home')
 @auth_required('token')
-@roles_required('user')#and
+@roles_accepted('user', 'admin')#and
 # @roles_accepted(['user', 'admin']) #OR
 def user_home():
     user = current_user
     return jsonify({
         "username": user.username,
         "email": user.email,
-        "password": user.password
+        "roles": roles_list(user.roles)
     })
 
 @app.route('/api/login', methods=['POST'])
@@ -119,6 +119,34 @@ def review(trans_id):
     return {
         "message": "transaction reviewed!"
     }
+
+
+# login is succesful
+
+# data =  {
+#     id:, 
+#     username:,
+#     auth-token
+# }
+
+# login is not succesful
+
+# data = {
+#     message:
+# }
+
+
+# obj1 = {
+#     id:, 
+#     username:,
+#     auth-token:
+# } 
+
+# Object.keys(data) ---> ['id', 'username', 'auth-token'] || ['message']
+
+# if 'auth-token' in Object.keys(data):
+
+# if Object.keys(data).includes('auth-token')
 
 
 

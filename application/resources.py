@@ -1,23 +1,20 @@
 from flask_restful import Api, Resource, reqparse 
 from .models import *
 from flask_security import auth_required, roles_required, roles_accepted, current_user
+import datetime
+from .utils import roles_list
 
 api = Api()
 
-def roles_list(roles):
-    role_list = []
-    for role in roles:
-        role_list.append(role.name)
-    return role_list
 
 parser = reqparse.RequestParser()
 
 parser.add_argument('name')
 parser.add_argument('type')
-parser.add_argument('date')
+# parser.add_argument('date')
 parser.add_argument('source')
 parser.add_argument('destination')
-parser.add_argument('description')
+parser.add_argument('desc')
 
 
 class TransApi(Resource):
@@ -43,6 +40,7 @@ class TransApi(Resource):
             this_trans["internal_status"] = transaction.internal_status
             this_trans["delivery_status"] = transaction.delivery_status
             this_trans["description"] = transaction.description
+            this_trans["amount"] = transaction.amount
             this_trans["user"] = transaction.bearer.username #/current_user.id 
             trans_jsons.append(this_trans)
         
@@ -60,10 +58,10 @@ class TransApi(Resource):
         try:
             transaction = Transaction(name = args["name"],
                                     type = args["type"],
-                                    date = args["date"],
+                                    date = datetime.datetime.now(),
                                     source = args["source"],
                                     destination = args["destination"],
-                                    description = args["description"],
+                                    description = args["desc"],
                                     user_id = current_user.id)
             db.session.add(transaction)
             db.session.commit()
