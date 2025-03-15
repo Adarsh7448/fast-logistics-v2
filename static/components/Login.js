@@ -8,7 +8,7 @@ export default {
                 <p class="mx-2 mt-2 text-danger">{{message}}</p>
                     <div class="mx-2 mb-3">
                         <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="email" v-model="formData.email" placeholder="name@example.com">
+                        <input type="email" class="form-control" id="email" v-model="formData.email" placeholder="name@example.com" required>
                     </div>
                     <div class="mx-2 mb-3">
                         <label for="password" class="form-label">Password</label>
@@ -41,6 +41,7 @@ export default {
             })
             .then(response => response.json())
             .then(data => { 
+                console.log(data)
                 if(Object.keys(data).includes("auth-token")){
                     localStorage.setItem("auth_token", data["auth-token"])
                     localStorage.setItem("id", data.id)
@@ -49,8 +50,7 @@ export default {
                         this.$router.push('/admin')
                     }else{
                         this.$router.push('/dashboard') // redirect('/dashboard') in flask
-                    }
-                    
+                    }   
                 }
                 else{
                     this.message = data.message

@@ -1,70 +1,125 @@
 export default {
-    template: `
+    template: `    
     <div>
         <h2 class="my-2">Welcome, {{userData.username}}!</h2>
         <div class="row border">
             <div class="col-8 border" style="height: 750px; overflow-y: scroll">
-                <h2>Your Transactions</h2>
-                <div v-for="t in transactions" class="card mt-2">
-                    <div class="card-body">
-                        <h5 class="card-title">{{t.name}} <span class="badge text-white bg-secondary">{{t.type}}</span></h5>
-                        <p class="card-text">Created at: {{t.date}}</p>
-                        <p v-if="t.internal_status == 'paid'" class="card-text">Delivery: {{t.delivery}}</p>
-                        <p v-if="t.internal_status == 'paid'" class="card-text">Delivery: {{t.delivery_status}}</p>
-                        <p class="card-text">About: {{t.description}}</p>
-                        <p class="card-text">From {{t.source}} to {{t.destination}}</p>
-                        <p v-if="t.internal_status == 'pending'" class="card-text">
-                            Amount: {{t.amount}}
-                            <button class="btn btn-success">Pay</button>
-                        </p>
-                        <p v-if="t.internal_status == 'requested'" class="card-text">
-                            <router-link :to="{name: 'update', params: {id: t.id}}" class="btn btn-warning">Update</router-link>
-                            <button class="btn btn-danger">Delete</button>
-                        </p>
-                        
-                    </div>
-                </div>
+                <h2>Requested Transactions</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Package Name</th>
+                        <th scope="col">Source</th>
+                        <th scope="col">Destination</th>
+                        <th scope="col">Created at</th>
+                        <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="t in transactions" v-if="t.internal_status == 'requested'">
+                            <td>{{t.id}}</td>
+                            <td>{{t.name}}</td>
+                            <td>{{t.source}}</td>
+                            <td>{{t.destination}}</td>
+                            <td>{{t.date.substring(0, 11)}}</td>
+                            <td>
+                                <button @click="() => review(t)" class="btn btn-info btn-sm">Review</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h2>Pending Transactions</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Package Name</th>
+                        <th scope="col">Source</th>
+                        <th scope="col">Destination</th>
+                        <th scope="col">Created at</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="t in transactions" v-if="t.internal_status == 'pending'">
+                            <td>{{t.id}}</td>
+                            <td>{{t.name}}</td>
+                            <td>{{t.source}}</td>
+                            <td>{{t.destination}}</td>
+                            <td>{{t.date.substring(0, 11)}}</td>
+                            <td>{{t.amount}}</td>
+                            <td>
+                                <button class="btn btn-danger btn-sm">Reject</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h2>Paid Transactions</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Package Name</th>
+                        <th scope="col">Source</th>
+                        <th scope="col">Destination</th>
+                        <th scope="col">Created at</th>
+                        <th scope="col">Delivery Status</th>
+                        <th scope="col">Update delivery status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="t in transactions" v-if="t.internal_status == 'paid'">
+                            <td>{{t.id}}</td>
+                            <td>{{t.name}}</td>
+                            <td>{{t.source}}</td>
+                            <td>{{t.destination}}</td>
+                            <td>{{t.date.substring(0, 11)}}</td>
+                            <td>{{t.delivery_status}}</td>
+                            <td class="d-flex">
+                                <select class="form-select mx-2" style="width: 60%" v-model="delivery_status">
+                                    <option selected>Open this select menu</option>
+                                    <option value="in-process">In Process</option>
+                                    <option value="in-transit">In Transit</option>
+                                    <option value="dispatched">Dispatched</option>
+                                    <option value="out-for-delivery">Out For Delivery</option>
+                                    <option value="delivered">Delivered</option>
+                                </select>
+                                <button @click="() => updateDelivery(t.id)" class="btn btn-primary btn-sm">Save</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="col-4 border" style="height: 750px;">
-                <h2>Create Transaction</h2>
-                <div class="mb-3">
-                    <label for="name" class="form-label">Transaction Name</label>
-                    <input type="text" class="form-control" id="name" v-model="transData.name">
-                </div>
-                <div class="mb-3">
-                    <label for="type" class="form-label">Transaction Type</label>
-                    <input type="text" class="form-control" id="type" v-model="transData.type">
-                </div>
-                <div class="d-flex">
-                    <div class="mb-3 mx-2">
-                        <label for="source" class="form-label">Source City</label>
-                        <select class="form-select" aria-label="Default select example" v-model="transData.source">
-                            <option selected>Open this select menu</option>
-                            <option value="Mumbai">Mumbai</option>
-                            <option value="Nagpur">Nagpur</option>
-                            <option value="Chennai">Chennai</option>
-                            <option value="Delhi">Delhi</option>
-                            <option value="Kolkata">Kolkata</option>
-                        </select>
+            <div class="col-4 border text-center" style="height: 750px;">
+                <h2>Review Transaction</h2>
+                <div v-if="show_review">
+                    <div class="mb-3">
+                        <p class="fs-3">Transaction Name</p>
+                        <p class="fs-4">{{t.name}}</p>
                     </div>
                     <div class="mb-3">
-                        <label for="destination" class="form-label">Destination City</label>
-                        <select class="form-select" aria-label="Default select example" v-model="transData.destination">
-                            <option selected>Open this select menu</option>
-                            <option value="Mumbai">Mumbai</option>
-                            <option value="Nagpur">Nagpur</option>
-                            <option value="Chennai">Chennai</option>
-                            <option value="Delhi">Delhi</option>
-                            <option value="Kolkata">Kolkata</option>
-                        </select>
+                        <p class="fs-3">Transaction Type</p>
+                        <p class="fs-4">{{t.type}}</p>
+                    </div>
+                    <div class="mb-3">
+                        <p class="fs-4">{{t.source}} to {{t.destination}}</p>
+                    </div>
+                    <div class="mb-3 mx-auto" style="width: 60%">
+                        <label for="delivery" class="form-label">Delivery Date</label>
+                        <input type="date" class="form-control" id="delivery" v-model="t.delivery">
+                    </div>
+                    <div class="mb-3 mx-auto" style="width: 60%">
+                        <label for="amount" class="form-label">Amount</label>
+                        <input type="number" class="form-control" id="amount" v-model="t.amount">
+                    </div>
+                    <div class="mb-3 text-end">
+                        <button @click="() => save(t.id)" class="btn btn-primary">Save</button>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label for="desc" class="form-label">Description</label>
-                    <textarea class="form-control" id="desc" rows="3" v-model="transData.desc"></textarea>
-                </div>
-                <div class="mb-3 text-end">
-                    <button @click="review" class="btn btn-primary">Create+</button>
+                <div v-else>
+                    <p>Click on review button to review a transaction</p>
                 </div>
             </div>
         </div>
@@ -73,15 +128,16 @@ export default {
         return {
             userData: "",
             transactions: null,
-            transData: {
-                name: '',
-                type: '',
-                source: '',
-                destination: '',
-                desc: ''
-            }
-
-            
+            show_review: false,
+            delivery_status: "",
+            t: {
+                name: "Package Dummy",
+                type: "Fragile",
+                source: "Chennai",
+                destination: "New Delhi",
+                delivery: "11-03-2025",
+                amount: "1200"
+            }  
         }
     },
     mounted(){
@@ -114,8 +170,41 @@ export default {
                 this.transactions = data
             })
         },
-        review(){
-            
+        review(t){
+            this.show_review = true
+            this.t = t;
+        },
+        save(id){
+            fetch(`/api/review/${id}`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authentication-Token": localStorage.getItem("auth_token")
+                },
+                body: JSON.stringify(this.t)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                this.$router.go(0)
+            })
+        },
+        updateDelivery(id){
+            fetch(`/api/delivery/${id}`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authentication-Token": localStorage.getItem("auth_token")
+                },
+                body: JSON.stringify({
+                    status: this.delivery_status
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                this.$router.go(0)
+            })
         }
     }
 

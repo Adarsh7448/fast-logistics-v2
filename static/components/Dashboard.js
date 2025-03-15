@@ -1,26 +1,28 @@
 export default {
     template: `
-    <div>
+        <div>
         <h2 class="my-2">Welcome, {{userData.username}}!</h2>
         <div class="row border">
             <div class="col-8 border" style="height: 750px; overflow-y: scroll">
-                <h2>Requested Transactions</h2>
+                <h2>Your Transactions</h2>
                 <div v-for="t in transactions" class="card mt-2">
-                    table
-                     thead
-                     tbody
-                </div>
-                <h2>Pending Transactions</h2>
-                <div v-for="t in transactions" class="card mt-2">
-                    table
-                     thead
-                     tbody
-                </div>
-                <h2>Paid Transactions</h2>
-                <div v-for="t in transactions" class="card mt-2">
-                    table
-                     thead
-                     tbody
+                    <div class="card-body">
+                        <h5 class="card-title">{{t.name}} <span class="badge text-white bg-secondary">{{t.type}}</span></h5>
+                        <p class="card-text">Created at: {{t.date}}</p>
+                        <p v-if="t.internal_status == 'paid'" class="card-text">Delivery: {{t.delivery}}</p>
+                        <p v-if="t.internal_status == 'paid'" class="card-text">Delivery: {{t.delivery_status}}</p>
+                        <p class="card-text">About: {{t.description}}</p>
+                        <p class="card-text">From {{t.source}} to {{t.destination}}</p>
+                        <p v-if="t.internal_status == 'pending'" class="card-text">
+                            Amount: {{t.amount}}
+                            <button @click="() => pay(t.id)" class="btn btn-success">Pay</button>
+                        </p>
+                        <p v-if="t.internal_status == 'requested'" class="card-text">
+                            <router-link :to="{name: 'update', params: {id: t.id}}" class="btn btn-warning">Update</router-link>
+                            <button class="btn btn-danger">Delete</button>
+                        </p>
+                        
+                    </div>
                 </div>
             </div>
             <div class="col-4 border" style="height: 750px;">
@@ -124,6 +126,20 @@ export default {
             .then(data => {
                 console.log(data)
                 this.transactions = data
+            })
+        },
+        pay(id){
+            fetch(`/api/pay/${id}`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authentication-Token": localStorage.getItem("auth_token")
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                this.$router.go(0)
             })
         }
     }

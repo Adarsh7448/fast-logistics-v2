@@ -54,7 +54,9 @@ def user_login():
             return jsonify({
                 "id": user.id,
                 "username": user.username,
-                "auth-token": user.get_auth_token()
+                "auth-token": user.get_auth_token(),
+                # "roles": roles_list(user.roles) 
+                "roles": roles_list(current_user.roles) 
             })
         else:
             return jsonify({
