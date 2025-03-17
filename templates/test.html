@@ -69,3 +69,45 @@
 <div class="mb-3 text-end">
     <button class="btn btn-primary">Create+</button>
 </div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Package Name</th>
+          <th scope="col">Source</th>
+          <th scope="col">Destination</th>
+          <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>{{t.id}}</tr>
+        <tr>{{t.name}}</tr>
+        <tr>{{t.source}}</tr>
+        <tr>{{t.destination}}</tr>
+        <tr>
+            <button class="btn btn-info btn-sm">Review</button>
+        </tr>
+    </tbody>
+</table>
+
+<div class="mb-3">
+    <p class="fs-3">Transaction Name</p>
+    <p>{{t.name}}</p>
+</div>
+<div class="mb-3">
+    <p class="fs-3">Transaction Type</p>
+    <p>{{t.type}}</p>
+</div>
+<div class="mb-3">
+    <p>{{t.source}}</p> to {{t.destination}}
+</div>
+<div class="mb-3">
+    <label for="delivery" class="form-label">Delivery Date</label>
+    <input type="date" class="form-control" id="delivery" v-model="t.delivery">
+</div>
+<div class="mb-3">
+    <label for="amount" class="form-label">Amount</label>
+    <input type="number" class="form-control" id="amount" v-model="t.amount">
+</div>
+
