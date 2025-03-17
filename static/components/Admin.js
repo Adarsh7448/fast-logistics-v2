@@ -3,6 +3,11 @@ export default {
     <div>
         <h2 class="my-2">Welcome, {{userData.username}}!</h2>
         <div class="row border">
+            <div class="text-end my-2">
+                <button @click="csvExport" class="btn btn-secondary">Download CSV</button>
+            </div>
+        </div>
+        <div class="row border">
             <div class="col-8 border" style="height: 750px; overflow-y: scroll">
                 <h2>Requested Transactions</h2>
                 <table class="table table-striped">
@@ -204,6 +209,13 @@ export default {
             .then(data => {
                 console.log(data)
                 this.$router.go(0)
+            })
+        },
+        csvExport(){
+            fetch('/api/export')
+            .then(response => response.json())
+            .then(data => {
+                window.location.href = `/api/csv_result/${data.id}`
             })
         }
     }

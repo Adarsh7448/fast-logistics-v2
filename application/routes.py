@@ -1,9 +1,11 @@
 from .database import db 
 from .models import User, Role, Transaction
-from flask import current_app as app, jsonify, request, render_template
+from flask import current_app as app, jsonify, request, render_template, send_from_directory
 from flask_security import auth_required, roles_required, roles_accepted, current_user, login_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from .utils import roles_list
+from celery.result import AsyncResult
+from .tasks import csv_report, monthly_report
 
 @app.route('/', methods = ['GET'])
 def home():
@@ -122,35 +124,26 @@ def review(trans_id):
         "message": "transaction reviewed!"
     }
 
+@app.route('/api/export') # this manually triggers the job
+def export_csv():
+    result = csv_report.delay() # async object
+    return jsonify({
+        "id": result.id,
+        "result": result.result,
 
-# login is succesful
+    })
 
-# data =  {
-#     id:, 
-#     username:,
-#     auth-token
-# }
+@app.route('/api/csv_result/<id>') # just create to test the status of result
+def csv_result(id):
+    res = AsyncResult(id)
+    return send_from_directory('static', res.result)
 
-# login is not succesful
-
-# data = {
-#     message:
-# }
-
-
-# obj1 = {
-#     id:, 
-#     username:,
-#     auth-token:
-# } 
-
-# Object.keys(data) ---> ['id', 'username', 'auth-token'] || ['message']
-
-# if 'auth-token' in Object.keys(data):
-
-# if Object.keys(data).includes('auth-token')
-
-
+@app.route('/api/mail')
+def send_reports():
+    res = monthly_report.delay()
+    return {
+        "result": res.result
+    }
 
 
 
